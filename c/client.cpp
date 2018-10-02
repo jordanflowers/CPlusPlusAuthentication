@@ -88,125 +88,63 @@ int main(int argc, char *argv[])
     // For sending messages
     while(1)
     {
-        cout << ">> What would you like to do?\n1)Public Key Encryption\n2)Symmetric Key Encryption\n3)Digital Signature\n4)Hash some text\n";
-        int in;
+        cout << "Type in your username and password:\n";
+        string username, password = "";
         string data;
         char receivedMessage[1500];
         
         EVP_PKEY *server_public;
 
 
+        cout << "Username: ";
+        cin >> username;
+        cout << "Password: ";
+        cin >> password;
+        // Need to get server's public key.
+        data = "needPU";
+        memset(&msg, 0, sizeof(msg));//clear the buffer
+        strcpy(msg, data.c_str());
+        send(clientSd, (char*)&msg, strlen(msg), 0);
 
-        cin >> in;
-        switch (in)
-        {
-            case 1:
-
-
-                // Need to get server's public key.
-                data = "needPU";
-                memset(&msg, 0, sizeof(msg));//clear the buffer
-                strcpy(msg, data.c_str());
-                send(clientSd, (char*)&msg, strlen(msg), 0);
-
-                cout << "Resetting receivedMessage.\n";
-                memset(receivedMessage, 0, sizeof(receivedMessage));
-                
-                // Try to receive a message from the server.
-                cout << "Trying to receive the server's public key.\n";
-                recv(clientSd, (char*)&receivedMessage, sizeof(receivedMessage), 0);
-
-                
-                out.open("serverPublic.pem");
-                data = receivedMessage;
-                cout << "message: \n" << receivedMessage << endl;
-                // data contains the server's public key. We will create a file containing this information.
-                out << data;
-                out.close();
-                // We now have the server's public key.
-
-
-                cout << "Enter the message to encrypt:\n";
-
-                getline(cin, data);
-                memset(&msg, 0, sizeof(msg));//clear the buffer
-                strcpy(msg, data.c_str());
-
-                // We have the message...Now we encrypt
-                FILE *pFile = fopen ("serverPublic.pem" , "r");
-                //server_Public = PEM_read_PUBKEY(pFile, NULL, NULL, NULL);
+        cout << "Resetting receivedMessage.\n";
+        memset(receivedMessage, 0, sizeof(receivedMessage));
         
-                
+        // Try to receive a message from the server.
+        cout << "Trying to receive the server's public key.\n";
+        recv(clientSd, (char*)&receivedMessage, sizeof(receivedMessage), 0);
 
-                if(data == "exit")
-                {
-                    send(clientSd, (char*)&msg, strlen(msg), 0);
-                    break;
-                }
-                send(clientSd, (char*)&msg, strlen(msg), 0);
+        
+        out.open("serverPublic.pem");
+        data = receivedMessage;
+        cout << "message: \n" << receivedMessage << endl;
+        // data contains the server's public key. We will create a file containing this information.
+        out << data;
+        out.close();
+        // We now have the server's public key.
 
-                // Clear the buffer
-                memset(&msg, 0, sizeof(msg));
 
-                break;
-            case 2:
-                getline(cin, data);
-                memset(&msg, 0, sizeof(msg));//clear the buffer
-                strcpy(msg, data.c_str());
+        cout << "Enter the message to encrypt:\n";
 
-                
+        getline(cin, data);
+        memset(&msg, 0, sizeof(msg));//clear the buffer
+        strcpy(msg, data.c_str());
 
-                if(data == "exit")
-                {
-                    send(clientSd, (char*)&msg, strlen(msg), 0);
-                    break;
-                }
-                send(clientSd, (char*)&msg, strlen(msg), 0);
+        // We have the message...Now we encrypt
+        FILE *pFile = fopen ("serverPublic.pem" , "r");
+        //server_Public = PEM_read_PUBKEY(pFile, NULL, NULL, NULL);
 
-                // Clear the buffer
-                memset(&msg, 0, sizeof(msg));
+        
 
-                break;
-            case 3:
-                getline(cin, data);
-                memset(&msg, 0, sizeof(msg));//clear the buffer
-                strcpy(msg, data.c_str());
-
-                
-
-                if(data == "exit")
-                {
-                    send(clientSd, (char*)&msg, strlen(msg), 0);
-                    break;
-                }
-                send(clientSd, (char*)&msg, strlen(msg), 0);
-
-                // Clear the buffer
-                memset(&msg, 0, sizeof(msg));
-                
-                break;
-            case 4:
-                getline(cin, data);
-                memset(&msg, 0, sizeof(msg));//clear the buffer
-                strcpy(msg, data.c_str());
-
-                
-
-                if(data == "exit")
-                {
-                    send(clientSd, (char*)&msg, strlen(msg), 0);
-                    break;
-                }
-                send(clientSd, (char*)&msg, strlen(msg), 0);
-
-                // Clear the buffer
-                memset(&msg, 0, sizeof(msg));
-                
-                break;
-            default:
-                cerr << "Not a correct option.\n";
-                break;
+        if(data == "exit")
+        {
+            send(clientSd, (char*)&msg, strlen(msg), 0);
+            break;
         }
+        send(clientSd, (char*)&msg, strlen(msg), 0);
+
+        // Clear the buffer
+        memset(&msg, 0, sizeof(msg));
+
         
         
     }
